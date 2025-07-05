@@ -35,34 +35,22 @@
     }
 
     .titulo-wrapper {
-  position: absolute;
-  top: 80px; /* antes era 40px */
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
+ position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 160px; /* espacio disponible sobre la ruleta */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 2;
-  width: 90%; /* asegura que el texto no se desborde */
+  text-align: center;
 }
 
-.titulo-principal {
-  font-size: 42px;
-  font-weight: 900;
-  color: #ffffff;
-  text-shadow: 4px 4px 8px #000;
-  margin: 0;
-  animation: aparecer 1s ease-in-out;
-  white-space: nowrap; /* 👈 fuerza una sola línea */
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.titulo-secundario {
-  font-size: 24px;
-  font-weight: bold;
-  color: #FFD700;
-  text-shadow: 3px 3px 6px #000;
-  margin: 10px 0 0 0;
-  animation: aparecer 1.2s ease-in-out;
+.titulo-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
     @keyframes aparecer {
       from { opacity: 0; transform: translateY(-20px); }
@@ -189,6 +177,7 @@ main {
   text-align: center;
   color: #FFD700;
   text-shadow: 2px 2px 5px #000;
+  min-height: 40px; /* reserva espacio */
   margin-top: 10px;
   opacity: 0;
   transform: scale(0.8);
@@ -219,8 +208,10 @@ main {
   <div class="fondo-overlay"></div>
 
   <div class="titulo-wrapper">
-  <h1 class="titulo-principal">Pinta Burger 🍔</h1>
-  <h2 class="titulo">🎯 ¡Girá la Ruleta y Ganá!</h2>
+  <div class="titulo-contenedor">
+    <h1 class="titulo-principal">Pinta Burger 🍔</h1>
+    <h2 class="titulo-secundario">🎯 ¡Girá la Ruleta y Ganá!</h2>
+  </div>
 </div>
 
   <main>
@@ -324,73 +315,74 @@ function registrarGiro() {
   spinBtn.disabled = true;
 
   const index = getRandomPrizeIndex();
-  const segmentAngle = 360 / prizes.length;
-  const targetAngle = 360 - (index * segmentAngle + segmentAngle / 2);
-  const baseRotation = 360 * 5;
-  const overshoot = 15; // cuánto se pasa para luego rebotar
-  const totalRotation = baseRotation + targetAngle + overshoot;
+  const ángulo de segmento = 360 / premios.longitud;
+  const ángulo objetivo = 360 - (índice * ángulo de segmento + ángulo de segmento / 2);
+  const Rotación base = 360 * 5;
+  const overshoot = 15; // cuanto se pasa para luego rebotar
+  const Rotación total = Rotación base + ángulo objetivo + overshoot;
 
-  const duration = 5000;
-  const reboundDuration = 500;
-  const start = performance.now();
+  const duración = 5000;
+  const duración del rebote = 500;
+  const comenzar = rendimiento.ahora();
 
-  function animate(now) {
-    const elapsed = now - start;
-    const progress = Math.min(elapsed / duration, 1);
+  función animar(ahora) {
+    const transcurrido = ahora - comer;
+    const progreso = Matemáticas.min(transcurrido / duración, 1);
 
-    const easeOut = 1 - Math.pow(1 - progress, 3);
-    const currentRotation = easeOut * totalRotation;
+    const easeOut = 1 - Matemáticas.pow(1 - progreso, 3);
+    const Rotación real = easeOut * Rotación total;
 
-    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.estilo de relleno = "rgba(0, 0, 0, 0,2)";
     ctx.fillRect(0, 0, 400, 400);
 
-    ctx.save();
-    ctx.translate(200, 200);
-    ctx.rotate((currentRotation * Math.PI) / 180);
-    ctx.translate(-200, -200);
-    drawWheel();
-    ctx.restore();
+    ctx.salvar();
+    ctx.traducir(200, 200);
+    ctx.rotar((Rotación actual * Matemáticas.PI) / 180);
+    ctx.traducir(-200, -200);
+    rueda de tracción();
+    ctx.restaurador();
 
-    if (progress < 1) {
-      requestAnimationFrame(animate);
+    si (progreso < 1) {
+      solicitudAnimationFrame(animar);
     } else {
       // Rebote hacia atrás
-      const reboundStart = performance.now();
-      function rebound(now2) {
-        const reboundElapsed = now2 - reboundStart;
-        const reboundProgress = Math.min(reboundElapsed / reboundDuration, 1);
-        const reboundEase = 1 - Math.pow(1 - reboundProgress, 2);
-        const reboundRotation = totalRotation - reboundEase * overshoot;
+      const reboteInicio = rendimiento.ahora();
+      función rebote(ahora2) {
+        const reboteTranscurrido = ahora2 - reboteInicio;
+        const reboteProgreso = Matemáticas.min(reboteTranscurrido / duración del rebote, 1);
+        const reboteFacilidad = 1 - Matemáticas.pow(1 - reboteProgreso, 2);
+        const reboteRotación = Rotación total - reboteFacilidad * overshoot;
 
-        ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+        ctx.estilo de relleno = "rgba(0, 0, 0, 0,2)";
         ctx.fillRect(0, 0, 400, 400);
 
-        ctx.save();
-        ctx.translate(200, 200);
-        ctx.rotate((reboundRotation * Math.PI) / 180);
-        ctx.translate(-200, -200);
-        drawWheel();
-        ctx.restore();
+        ctx.salvar();
+        ctx.traducir(200, 200);
+        ctx.rotar((reboteRotación * Matemáticas.PI) / 180);
+        ctx.traducir(-200, -200);
+        rueda de tracción();
+        ctx.restaurador();
 
-        if (reboundProgress < 1) {
-          requestAnimationFrame(rebound);
+        si (reboteProgreso < 1) {
+          solicitudAnimationFrame(rebote);
         } else {
-          resultDiv.textContent = `🎉 ¡Ganaste: ${prizes[index]}!`;
-          resultDiv.classList.add("mostrar");
-          spinBtn.disabled = false;
+          resultadoDiv.contenido de texto = `🎉 ¡Ganaste: ${premios[Índice]}!`;
+          resultadoDiv.lista de clases.agregar("mostrar");
+          spinBtn.incapacitado = falso;
         }
       }
 
-      requestAnimationFrame(rebound);
+      solicitudAnimationFrame(rebote);
     }
   }
 
-  requestAnimationFrame(animate);
+  solicitudAnimationFrame(animar);
 }
     
 
-    drawWheel();
-    spinBtn.addEventListener("click", spinWheel);
+    rueda de tracción();
+    spinBtn.addEventListener("clic", rueda giratoria);
   </script>
-</body>
+</cuervo>
 </html>
+
